@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: csv_bronze_source
+    schema: medical_data_csv
+    database: bronze
+    tables:
+      - name: csv_preprocessing
+
+  - name: json_bronze_source
+    schema: medications_data_json
+    database: bronze
+    tables:
+      - name: json_preprocessing
+  
+  - name: sql_bronze_source
+    schema: appointments_patients_data_sql_server
+    database: bronze
+    tables:
+      - name: appointments_preprocessing
+      - name: patients_preprocessing
