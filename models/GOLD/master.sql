@@ -1,33 +1,46 @@
-{{ config(
-    database='GOLD',
-    schema='MEDICAL_DATA'
-) }}
+CREATE OR REPLACE VIEW GOLD.MEDICAL_DATA.MASTER AS (
 
-SELECT 
-    c.PATIENT_ID,
-    dateofbirth,
-    appointmentid,
-    appointmentdatetime,
-    appointmentdate,
-    TEST_DATE,
-    TEST_TYPE,
-    TEST_RESULT,
-    MEDICATIONTYPE,
-    DOSAGE,
-    STARTDATE,
-    ENDDATE,
+    SELECT 
+        p.PATIENTID AS PATIENT_ID,
+        p.NAME,
+        p.DATEOFBIRTH,
+        p.POSTALCODE,
+        a.APPOINTMENTID,
+        a.APPOINTMENTTIME,
+        a.APPOINTMENTDATE,
+        m.TEST_DATE,
+        m.TEST_TYPE,
+        m.TEST_RESULT,
+        md._DATA:"MedicationType"::STRING AS MEDICATIONTYPE,
+        md._DATA:"Dosage"::STRING AS DOSAGE,
+        md._DATA:"StartDate"::DATE AS MEDICATIONSTARTDATE,
+        md._DATA:"EndDate"::DATE AS MEDICATIONENDDATE
+        
+    FROM
+        {{source("sql_bronze_source", "patients_preprocessing")}} p
     
-FROM
-    {{source("csv_bronze_source","csv_preprocessing")}} c
-JOIN 
-    {{source("json_bronze_source","json_preprocessing")}} j
-    ON c.patient_id = j.patientid
--- Uncomment the below if needed
-JOIN 
-   (SELECT s1.patientid,s1.appointmentid,
-    s1.appointmentdatetime,
-    s1.appointmentdate,s2.dateofbirth
-    FROM {{source("sql_bronze_source","appointments_preprocessing")}} s1 
-    JOIN {{source("sql_bronze_source","patients_preprocessing")}} s2 
-    ON s1.patientid=s2.patientid) s 
-   ON s.patientid=j.patientid
+    LEFT JOIN 
+        {{source("sql_bronze_source", "appointments_preprocessing")}} a
+        ON p.PATIENTID = a.PATIENTID
+        AND a._FIVETRAN_DELETED = FALSE
+    
+    -- Join medical test data from CSV, ensuring that only valid test data is included
+    LEFT JOIN 
+        {{source("csv_bronze_source", "csv_preprocessing")}} m
+        ON p.PATIENTID = m.PATIENT_ID
+        AND m.TEST_DATE IS NOT NULL
+        AND m.TEST_RESULT IS NOT NULL
+    
+    -- Join medication data from JSON, ensuring that only valid medication data is included
+    LEFT JOIN 
+        {{source("json_bronze_source", "json_preprocessing")}} md
+        ON p.PATIENTID = md._DATA:"PatientID"::NUMBER
+        AND md._DATA:"MedicationType" IS NOT NULL
+        AND md._DATA:"StartDate" IS NOT NULL
+        AND md._DATA:"EndDate" IS NOT NULL
+
+    WHERE
+        p._FIVETRAN_DELETED = FALSE
+        AND p.PATIENTID IS NOT NULL
+        AND p.NAME IS NOT NULL
+);
