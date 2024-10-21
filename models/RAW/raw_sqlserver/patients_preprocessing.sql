@@ -1,12 +1,12 @@
 {{ config(
     database='BRONZE',
-    schema='APPOINTMENTS_DATA_SQL_SERVER',) }}
+    schema='APPOINTMENTS_PATIENTS_DATA_SQL_SERVER',) }}
 
-with BRONZE_APPOINTMENTS as (
-    select APPOINTMENTID, APPOINTMENTDATE, APPOINTMENTTIME, PATIENTID
-    from {{source("raw_sql_server","APPOINTMENTS")}}
-    order by APPOINTMENTID
+with BRONZE_PATIENTS as (
+    select PATIENTID,NAME,POSTALCODE,DATEOFBIRTH
+    from {{source("raw_sql_server","PATIENTS")}}
+    order by PATIENTID
 )
 
 select *
-from BRONZE_APPOINTMENTS
+from BRONZE_PATIENTS
