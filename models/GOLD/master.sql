@@ -1,6 +1,7 @@
 {{ config(
     database='GOLD',
-    schema='MEDICAL_DATA'
+    schema='MEDICAL_DATA',
+    materialized='table'
 ) }}
 SELECT
     c.PATIENT_ID,
