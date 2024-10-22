@@ -1,0 +1,24 @@
+models:
+  - name: csv_preprocessing
+    description: Medical test results with deduplicated entries for each patient. One row per unique combination of patient_id, test_type, test_date, and test_result.
+    columns:
+      - name: patient_id
+        description: The unique identifier for a patient.
+        data_tests:
+          - not_null
+      - name: test_type
+        description: The type of medical test conducted (e.g., blood test, x-ray, etc.).
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['X-Ray', 'MRI', 'ECG', 'Blood Test', 'CT Scan', 'Urine Test']
+      - name: test_date
+        description: The date the test was conducted.
+        data_tests:
+          - not_null
+      - name: test_result
+        description: The result of the medical test.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Positive', 'Borderline', 'Negative', 'Abnormal', 'Normal']
