@@ -1,0 +1,43 @@
+version: 2
+models:
+  - name: medical_data
+    description: Consolidated medical data including patient details, appointments, medical tests, and medications, derived from CSV, JSON, and SQL sources.
+    columns:
+      - name: PATIENT_ID
+        description: The unique identifier for each patient, sourced from CSV and JSON data.
+      - name: NAME
+        description: The full name of the patient.
+      - name: POSTAL_CODE
+        description: The postal code for the patient’s address, which is always 6 digits long.
+      - name: DOB
+        description: The date of birth of the patient.
+        tests:
+          - valid_date
+      - name: APPOINTMENT_ID
+        description: The unique identifier for each appointment.
+      - name: APPOINTMENT_DATETIME
+        description: The combined date and time of the appointment.
+      - name: APPOINTMENT_DATE
+        description: The date of the appointment.
+        tests:
+          - valid_date
+      - name: TEST_DATE
+        description: The date the medical test was conducted.
+        tests:
+          - valid_date
+      - name: TEST_TYPE
+        description: The type of medical test conducted (e.g., X-ray, MRI, etc.).
+      - name: TEST_RESULT
+        description: The result of the medical test.
+      - name: MEDICATION_TYPE
+        description: The type of medication prescribed to the patient (e.g., Antibiotic, Painkiller, etc.).
+      - name: MEDICATION_DOSAGE
+        description: The prescribed dosage of the medication.
+      - name: MEDICATION_STARTDATE
+        description: The date the medication treatment started.
+        tests:
+          - valid_date
+      - name: MEDICATION_ENDDATE
+        description: The date the medication treatment ended.
+        tests:
+          - valid_date
