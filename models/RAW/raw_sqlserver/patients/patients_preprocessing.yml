@@ -1,0 +1,30 @@
+models:
+  - name: patients_preprocessing
+    description: Preprocessed patient data, including the patient’s name, postal code, and date of birth with additional data quality tests.
+    data_tests:
+      - dbt_expectations.expect_column_pair_values_A_to_be_greater_than_B:
+          column_B: DATEOFBIRTH
+          column_A: CURRENT_DATE()
+          or_equal: True
+    columns:
+      - name: PATIENTID
+        description: The unique identifier for each patient.
+        data_tests:
+          - not_null
+          - unique
+      - name: NAME
+        description: The full name of the patient.
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:  # Ensuring that the name contains only alphabetic characters
+              regex: "^[A-Za-z ]+$"  # Regular expression for alphabetic characters and spaces
+      - name: POSTALCODE
+        description: The postal code for the patient’s address. It must always be 6 digits long.
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:  # Ensuring the postal code is exactly 6 digits
+              regex: "^[0-9]{6}$"  # Regular expression for exactly 6 digits
+      - name: DATEOFBIRTH
+        description: The date of birth of the patient, which must be earlier than the current date.
+        data_tests:
+          - not_null

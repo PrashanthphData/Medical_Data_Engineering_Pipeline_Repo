@@ -1,0 +1,20 @@
+models:
+  - name: appointments_preprocessing
+    description: Preprocessed appointment data with a consolidated datetime column for each appointment.
+    columns:
+      - name: APPOINTMENTID
+        description: The unique identifier for each appointment.
+        data_tests:
+          - not_null
+      - name: APPOINTMENTDATE
+        description: The date when the appointment took place.
+        data_tests:
+          - not_null
+      - name: APPOINTMENTDATETIME
+        description: The combined date and time of the appointment, including fractional seconds.
+        data_tests:
+          - not_null
+      - name: PATIENTID
+        description: The unique identifier for the patient associated with the appointment.
+        data_tests:
+          - not_null

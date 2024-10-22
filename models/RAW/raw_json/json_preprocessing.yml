@@ -1,0 +1,34 @@
+models:
+  - name: json_preprocessing
+    description: Flattened medication data with deduplicated entries for each patient, including medication dosage, start date, end date, and type of medication.
+    data_tests:
+      - dbt_expectations.expect_column_pair_values_A_to_be_greater_than_B:
+          column_A: EndDate
+          column_B: StartDate
+          or_equal: True
+    columns:
+      - name: PatientID
+        description: The unique identifier for a patient.
+        data_tests:
+          - not_null
+      - name: MedicationType
+        description: The type of medication prescribed to the patient (e.g., Antibiotic, Painkiller, etc.).
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Antibiotic', 'Antihypertensive', 'Diuretic', 'Antiarrhythmic', 'Muscle Relaxant', 'Painkiller', 'Anti-inflammatory']
+      - name: Dosage
+        description: The prescribed dosage of the medication.
+        data_tests:
+          - not_null
+      - name: StartDate
+        description: The date the medication treatment started.
+        data_tests:
+          - not_null
+      - name: EndDate
+        description: The date the medication treatment ended.
+        data_tests:
+          - not_null
+          # - relationships:
+          #     test: greater_than
+          #     value: StartDate
