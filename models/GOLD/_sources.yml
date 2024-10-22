@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: Gold_layaer_source
+    schema: MEDICAL_DATA
+    database: GOLD
+    tables:
+      - name: master
+        columns:
+          - name: DATEOFBIRTH
+            tests:
+              - valid_date
+          - name: APPOINTMENTDATE
+            tests:
+              - valid_date
+          - name: startdate
+            tests:
+              - valid_date
+          - name: enddate
+            tests:
+              - valid_date
+          - name: test_date
+            tests:
+              - valid_date
+    
