@@ -5,6 +5,8 @@
 
 SELECT 
     c.PATIENT_ID,
+    name,
+    postalcode,
     dateofbirth,
     appointmentid,
     appointmentdatetime,
@@ -26,7 +28,7 @@ JOIN
 JOIN 
    (SELECT s1.patientid,s1.appointmentid,
     s1.appointmentdatetime,
-    s1.appointmentdate,s2.dateofbirth
+    s1.appointmentdate,s2.dateofbirth,s2.name,s2.postalcode
     FROM {{source("sql_bronze_source","appointments_preprocessing")}} s1 
     JOIN {{source("sql_bronze_source","patients_preprocessing")}} s2 
     ON s1.patientid=s2.patientid) s 
